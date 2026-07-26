@@ -21,6 +21,11 @@ class UserService:
         if existing_user:
             raise ValueError("Email already registered.")
 
+        # Debug prints
+        print(type(user_data.password))
+        print(user_data.password)
+        print(len(user_data.password))
+
         user = User(
             full_name=user_data.full_name,
             email=user_data.email,
