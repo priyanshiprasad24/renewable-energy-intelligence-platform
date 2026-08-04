@@ -1,94 +1,138 @@
-import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import {
+  FaFolderOpen,
+  FaMapMarkerAlt,
+  FaChartLine,
+  FaMoneyBillWave,
+} from "react-icons/fa";
+
 import Sidebar from "../components/Sidebar";
+import PageHeader from "../components/PageHeader";
+import StatCard from "../components/StatCard";
+import api from "../api/api";
 
 function Dashboard() {
-  return (
-    <div className="flex">
+  const [projects, setProjects] = useState([]);
+  const [sites, setSites] = useState([]);
+  const [user, setUser] = useState(null);
+  useEffect(() => {
+    loadDashboard();
+  }, []);
 
+  async function loadDashboard() {
+    try {
+      const [projectsRes, sitesRes, userRes] = await Promise.all([
+  api.get("/projects"),
+  api.get("/sites"),
+  api.get("/users/me"),
+]);
+console.log(userRes.data);
+setProjects(projectsRes.data);
+setSites(sitesRes.data);
+setUser(userRes.data);
+
+      setProjects(projectsRes.data);
+      setSites(sitesRes.data);
+    } catch (error) {
+      console.log("Dashboard Error:", error);
+    }
+  }
+
+  const totalGeneration = sites.length * 7.8;
+  const estimatedROI = 15 + projects.length * 0.4;
+
+  return (
+    <div className="flex bg-slate-100 min-h-screen">
       <Sidebar />
 
-      <div className="flex-1 bg-gray-100 min-h-screen">
+      <div className="flex-1 p-8">
+<PageHeader
+  title={`👋 Welcome, ${user ? user.username : "User"}`}
+  subtitle="AI-powered Solar & Wind Deployment Intelligence Platform"
+/>
 
-        {/* Top Navbar */}
-        <div className="bg-white shadow-md p-6 flex justify-between items-center">
+        {/* Statistics */}
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-10">
 
-          <h1 className="text-3xl font-bold text-green-700">
-            Solar & Wind Deployment Intelligence
-          </h1>
+          <StatCard
+            icon={<FaFolderOpen className="text-emerald-600" />}
+            title="Projects"
+            value={projects.length}
+          />
 
-          <div className="text-lg font-semibold">
-            👋 Welcome, Admin
+          <StatCard
+            icon={<FaMapMarkerAlt className="text-blue-600" />}
+            title="Sites"
+            value={sites.length}
+          />
+
+          <StatCard
+            icon={<FaChartLine className="text-orange-500" />}
+            title="Estimated Forecast"
+            value={`${totalGeneration.toFixed(1)} GWh`}
+          />
+
+          <StatCard
+            icon={<FaMoneyBillWave className="text-green-600" />}
+            title="Estimated ROI"
+            value={`${estimatedROI.toFixed(1)}%`}
+          />
+
+        </div>
+
+        {/* Welcome Card */}
+
+        <div className="bg-white rounded-3xl shadow-lg p-10">
+
+          <h2 className="text-3xl font-bold text-green-700 mb-4">
+            🌿 Solar & Wind Deployment Intelligence Platform
+          </h2>
+
+          <p className="text-gray-700 text-lg leading-8">
+            Welcome to your Renewable Energy Intelligence Dashboard.
+            Manage your renewable energy projects, analyze deployment sites,
+            evaluate environmental conditions, generate AI-powered reports,
+            forecast renewable energy potential, and optimize investment
+            decisions—all from one platform.
+          </p>
+
+          <div className="mt-8 grid md:grid-cols-3 gap-6">
+
+            <div className="bg-green-50 rounded-2xl p-6">
+              <h3 className="font-bold text-xl text-green-700">
+                📁 Projects
+              </h3>
+
+              <p className="mt-3 text-gray-600">
+                Create and manage renewable energy projects.
+              </p>
+            </div>
+
+            <div className="bg-blue-50 rounded-2xl p-6">
+              <h3 className="font-bold text-xl text-blue-700">
+                📍 Sites
+              </h3>
+
+              <p className="mt-3 text-gray-600">
+                Add project sites and perform AI-based analysis.
+              </p>
+            </div>
+
+            <div className="bg-yellow-50 rounded-2xl p-6">
+              <h3 className="font-bold text-xl text-yellow-700">
+                📊 Reports
+              </h3>
+
+              <p className="mt-3 text-gray-600">
+                Generate renewable energy reports and investment insights.
+              </p>
+            </div>
+
           </div>
 
         </div>
 
-        {/* Main Content */}
-        <div className="p-8">
-
-  <h2 className="text-2xl font-bold mb-2">
-    Dashboard
-  </h2>
-
-  <p className="text-gray-600 mb-8">
-    Renewable Energy Intelligence Platform
-  </p>
-
-  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-    {/* Environmental */}
-    <Link to="/environment">
-      <div className="bg-white rounded-xl shadow-md p-6 hover:shadow-xl transition cursor-pointer">
-        <h3 className="text-xl font-bold text-green-700">
-          🌍 Environmental Analysis
-        </h3>
-        <p className="text-gray-600 mt-2">
-          Analyze terrain, weather, land type, elevation and infrastructure.
-        </p>
       </div>
-    </Link>
-
-    {/* Solar */}
-    <Link to="/solar">
-      <div className="bg-white rounded-xl shadow-md p-6 hover:shadow-xl transition cursor-pointer">
-        <h3 className="text-xl font-bold text-yellow-600">
-          ☀ Solar Prediction
-        </h3>
-        <p className="text-gray-600 mt-2">
-          Predict solar energy potential for the selected location.
-        </p>
-      </div>
-    </Link>
-
-    {/* Wind */}
-    <Link to="/wind">
-      <div className="bg-white rounded-xl shadow-md p-6 hover:shadow-xl transition cursor-pointer">
-        <h3 className="text-xl font-bold text-blue-600">
-          💨 Wind Prediction
-        </h3>
-        <p className="text-gray-600 mt-2">
-          Analyze wind resources and estimate wind energy suitability.
-        </p>
-      </div>
-    </Link>
-
-    {/* Report */}
-    <Link to="/report">
-      <div className="bg-white rounded-xl shadow-md p-6 hover:shadow-xl transition cursor-pointer">
-        <h3 className="text-xl font-bold text-purple-700">
-          📑 Resource Report
-        </h3>
-        <p className="text-gray-600 mt-2">
-          Generate a complete renewable energy assessment report.
-        </p>
-      </div>
-    </Link>
-
-  </div>
-
-</div>
-
-      </div>
-
     </div>
   );
 }

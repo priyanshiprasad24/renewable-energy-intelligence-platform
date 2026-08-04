@@ -14,8 +14,11 @@ router = APIRouter(
     response_model=WindResponse
 )
 def predict(data: WindRequest):
-
+    print("Wind API called")
     return WindService.predict(
-        data.wind_speed,
-        data.elevation
-    )
+   data.latitude,
+   data.longitude
+
+    
+)
+    

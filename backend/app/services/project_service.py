@@ -82,3 +82,7 @@ class ProjectService:
             raise ValueError("Project not found.")
 
         ProjectRepository.delete(db, project)
+
+        return {
+            "message": "Project deleted successfully."
+        }

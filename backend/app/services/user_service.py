@@ -21,11 +21,6 @@ class UserService:
         if existing_user:
             raise ValueError("Email already registered.")
 
-        # Debug prints
-        print(type(user_data.password))
-        print(user_data.password)
-        print(len(user_data.password))
-
         user = User(
             full_name=user_data.full_name,
             email=user_data.email,
@@ -62,5 +57,11 @@ class UserService:
 
         return {
             "access_token": access_token,
-            "token_type": "bearer"
+            "token_type": "bearer",
+            "user": {
+                "id": user.id,
+                "full_name": user.full_name,
+                "email": user.email,
+                "role": user.role,
+            },
         }

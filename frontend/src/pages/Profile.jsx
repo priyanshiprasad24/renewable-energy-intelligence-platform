@@ -1,26 +1,24 @@
 import { useEffect, useState } from "react";
 import Sidebar from "../components/Sidebar";
-import api from "../api/api";
+import PageHeader from "../components/PageHeader";
 
 function Profile() {
-const [user, setUser] = useState(null);
-   useEffect(() => {
-    api
-      .get("/users/me")
-      .then((response) => {
-        setUser(response.data);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
   }, []);
 
   if (!user) {
     return (
       <div className="flex">
         <Sidebar />
-        <div className="flex-1 flex justify-center items-center min-h-screen">
-          Loading...
+        <div className="flex-1 flex justify-center items-center text-2xl font-semibold">
+          No user logged in.
         </div>
       </div>
     );
@@ -28,37 +26,93 @@ const [user, setUser] = useState(null);
 
   return (
     <div className="flex">
-
       <Sidebar />
 
-      <div className="flex-1 bg-gray-100 min-h-screen">
+      <div className="flex-1 bg-slate-100 min-h-screen p-8">
 
-        <div className="bg-white shadow-md p-6">
-          <h1 className="text-3xl font-bold text-green-700">
-            User Profile
-          </h1>
-        </div>
+        <PageHeader
+          title="My Profile"
+          subtitle="Renewable Energy Deployment Intelligence Platform"
+        />
 
-        <div className="p-8">
+        <div className="max-w-5xl mx-auto bg-white rounded-3xl shadow-xl p-10">
 
-          <div className="bg-white rounded-xl shadow-md p-8 max-w-2xl">
+          {/* Profile Header */}
 
-            <h2 className="text-2xl font-bold mb-6">
-              Profile Information
-            </h2>
+          <div className="flex items-center gap-8">
 
-            <div className="space-y-5 text-lg">
+            <div className="w-32 h-32 rounded-full bg-gradient-to-r from-green-500 to-blue-600 text-white flex items-center justify-center text-5xl font-bold">
+              {user.full_name.charAt(0).toUpperCase()}
+            </div>
 
-              <p>
-                <strong>Name:</strong> {user.full_name}
+            <div>
+
+              <h1 className="text-4xl font-bold text-gray-800">
+                {user.full_name}
+              </h1>
+
+              <p className="text-lg text-gray-500 mt-2">
+                {user.role}
               </p>
 
-              <p>
-                <strong>Email:</strong> {user.email}
+              <span className="inline-block mt-4 bg-green-100 text-green-700 px-4 py-2 rounded-full font-medium">
+                Active User
+              </span>
+
+            </div>
+
+          </div>
+
+          <hr className="my-10" />
+
+          {/* User Details */}
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+            <div className="bg-green-50 rounded-2xl p-6 shadow">
+
+              <h3 className="text-gray-500 mb-2">
+                Full Name
+              </h3>
+
+              <p className="text-xl font-semibold">
+                {user.full_name}
               </p>
 
-              <p>
-                <strong>Role:</strong> {user.role}
+            </div>
+
+            <div className="bg-blue-50 rounded-2xl p-6 shadow">
+
+              <h3 className="text-gray-500 mb-2">
+                Email
+              </h3>
+
+              <p className="text-xl font-semibold">
+                {user.email}
+              </p>
+
+            </div>
+
+            <div className="bg-yellow-50 rounded-2xl p-6 shadow">
+
+              <h3 className="text-gray-500 mb-2">
+                Role
+              </h3>
+
+              <p className="text-xl font-semibold">
+                {user.role}
+              </p>
+
+            </div>
+
+            <div className="bg-purple-50 rounded-2xl p-6 shadow">
+
+              <h3 className="text-gray-500 mb-2">
+                User ID
+              </h3>
+
+              <p className="text-xl font-semibold">
+                #{user.id}
               </p>
 
             </div>
@@ -68,7 +122,6 @@ const [user, setUser] = useState(null);
         </div>
 
       </div>
-
     </div>
   );
 }
