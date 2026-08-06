@@ -48,6 +48,19 @@ def get_sites(
 ):
     return SiteService.get_all_sites(db)
 
+@router.get(
+    "/project/{project_id}",
+    response_model=list[SiteResponse]
+)
+def get_sites_by_project(
+    project_id: int,
+    db: Session = Depends(get_db),
+    current_user=Depends(get_current_user)
+):
+    return SiteService.get_sites_by_project(
+        db,
+        project_id
+    )
 
 @router.get(
     "/{site_id}",

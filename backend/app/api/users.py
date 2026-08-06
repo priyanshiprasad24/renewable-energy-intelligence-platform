@@ -1,10 +1,9 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
-from app.auth.oauth2 import get_current_user
 from app.database.database import get_db
-from app.repositories.user_repository import UserRepository
-from app.schemas.user import UserResponse
+from app.auth.oauth2 import get_current_user
+from app.models.user import User
 
 router = APIRouter(
     prefix="/users",
@@ -12,17 +11,25 @@ router = APIRouter(
 )
 
 
-@router.get(
-    "/me",
-    response_model=UserResponse
-)
-def get_me(
-    db: Session = Depends(get_db),
-    current_user=Depends(get_current_user)
+@router.get("/me")
+def get_profile(
+    current_user=Depends(get_current_user),
+    db: Session = Depends(get_db)
 ):
-    user = UserRepository.get_by_email(
-        db,
-        current_user["sub"]
-    )
+    user = db.query(User).filter(
+        User.id == current_user["user_id"]
+    ).first()
 
-    return user
+    if not user:
+        raise HTTPException(
+            status_code=404,
+            detail="User not found."
+        )
+
+    return {
+        "id": user.id,
+        "username": user.full_name,
+        "email": user.email,
+        "role": user.role,
+        "status": "Active"
+    }

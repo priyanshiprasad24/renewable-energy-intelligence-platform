@@ -36,6 +36,16 @@ class SiteService:
         return SiteRepository.get_all(db)
 
     @staticmethod
+    def get_sites_by_project(
+        db: Session,
+        project_id: int
+    ):
+        return SiteRepository.get_by_project(
+            db,
+            project_id
+        )
+
+    @staticmethod
     def get_site_by_id(
         db: Session,
         site_id: int
@@ -90,3 +100,7 @@ class SiteService:
             raise ValueError("Site not found.")
 
         SiteRepository.delete(db, site)
+
+        return {
+            "message": "Site deleted successfully."
+        }

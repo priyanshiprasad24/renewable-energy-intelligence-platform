@@ -18,6 +18,20 @@ class EnvironmentalService:
             road_access = "Limited"
             grid_connection = "Far"
 
+        # Environmental Score
+        score = 90
+
+        # Suitability
+        if score >= 90:
+            suitability = "Excellent"
+            recommendation = "Highly Recommended"
+        elif score >= 70:
+            suitability = "Good"
+            recommendation = "Recommended"
+        else:
+            suitability = "Poor"
+            recommendation = "Not Recommended"
+
         return {
             "latitude": latitude,
             "longitude": longitude,
@@ -35,5 +49,9 @@ class EnvironmentalService:
             "terrain": terrain,
             "land_type": land_type,
             "road_access": road_access,
-            "grid_connection": grid_connection
+            "grid_connection": grid_connection,
+
+            "score": score,
+            "suitability": suitability,
+            "recommendation": recommendation,
         }

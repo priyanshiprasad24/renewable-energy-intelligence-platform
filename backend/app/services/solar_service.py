@@ -1,7 +1,9 @@
+from app.utils.geocoder import get_location_name
 class SolarService:
 
     @staticmethod
     def predict(latitude: float, longitude: float):
+        location = get_location_name(latitude, longitude)
 
         # Demo values (later you can replace these with real API data)
         solar_radiation = 6.4
@@ -41,7 +43,11 @@ class SolarService:
             recommendation = "Not Recommended"
 
         return {
-            "solar_score": score,
-            "suitability": suitability,
-            "recommendation": recommendation
-        }
+    "location": location,
+    "solar_radiation": solar_radiation,
+    "temperature": temperature,
+    "humidity": humidity,
+    "solar_score": score,
+    "suitability": suitability,
+    "recommendation": recommendation
+}

@@ -8,11 +8,21 @@ function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  async function handleLogin(e) {
+  const [loading, setLoading] = useState(false);
+
+  const handleLogin = async (e) => {
     e.preventDefault();
+
+    if (!email || !password) {
+      alert("Please enter email and password.");
+      return;
+    }
+
+    setLoading(true);
 
     try {
       const formData = new URLSearchParams();
+
       formData.append("username", email);
       formData.append("password", password);
 
@@ -25,33 +35,43 @@ function Login() {
           },
         }
       );
+      console.log(response.data);
+localStorage.setItem(
+  "token",
+  response.data.access_token
+);
 
-      // Save JWT token
-      localStorage.setItem(
-        "token",
-        response.data.access_token
-      );
+localStorage.setItem(
+  "user",
+  JSON.stringify(response.data.user)
+);
 
-      alert("Login Successful!");
+alert("Login Successful!");
 
-      // Redirect to Dashboard
-      navigate("/dashboard");
+navigate("/dashboard");
 
     } catch (error) {
-      console.error(error);
+
+      console.error("Login Error:", error);
 
       if (error.response) {
-        alert(error.response.data.detail);
+        alert(
+          error.response.data.detail ||
+          "Invalid email or password."
+        );
       } else {
-        alert("Login Failed!");
+        alert("Unable to connect to the server.");
       }
+
+    } finally {
+      setLoading(false);
     }
-  }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-700 via-green-500 to-blue-600 flex items-center justify-center">
 
-      <div className="bg-white rounded-2xl shadow-2xl p-10 w-[400px]">
+      <div className="bg-white rounded-2xl shadow-2xl p-10 w-[420px]">
 
         <h1 className="text-3xl font-bold text-center text-green-700">
           Solar & Wind
@@ -68,27 +88,34 @@ function Login() {
 
           <input
             type="email"
-            placeholder="Email"
+            placeholder="Enter Email"
             className="w-full border rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-500"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            disabled={loading}
             required
           />
 
           <input
             type="password"
-            placeholder="Password"
+            placeholder="Enter Password"
             className="w-full border rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-500"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            disabled={loading}
             required
           />
 
           <button
             type="submit"
-            className="w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded-lg transition"
+            disabled={loading}
+            className={`w-full py-3 rounded-lg text-white font-semibold transition ${
+              loading
+                ? "bg-gray-400 cursor-not-allowed"
+                : "bg-green-600 hover:bg-green-700"
+            }`}
           >
-            Login
+            {loading ? "Logging in..." : "Login"}
           </button>
 
         </form>

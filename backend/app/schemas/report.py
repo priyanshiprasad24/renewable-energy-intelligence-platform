@@ -7,12 +7,9 @@ class ReportRequest(BaseModel):
 
 
 class ReportResponse(BaseModel):
-    location: str
-
-    solar_score: int
-    solar_suitability: str
-
-    wind_score: int
-    wind_suitability: str
-
-    overall_recommendation: str
+    site_name: str
+    solar: dict
+    wind: dict
+    environment: dict
+    forecast: dict
+    investment: dict
