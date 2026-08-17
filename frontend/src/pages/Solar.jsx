@@ -5,7 +5,6 @@ import api from "../api/api";
 
 import PageHeader from "../components/PageHeader";
 
-import PrimaryButton from "../components/PrimaryButton";
 import StatCard from "../components/StatCard";
 import RecommendationCard from "../components/RecommendationCard";
 
@@ -28,38 +27,29 @@ useEffect(() => {
 const loadSite = async () => {
   try {
     const response = await api.get(`/sites/${siteId}`);
+
     setSite(response.data);
+
+    // Automatically predict solar potential
+    const predictionResponse = await api.post("/solar/predict", {
+      latitude: response.data.latitude,
+      longitude: response.data.longitude,
+    });
+
+    setResult(predictionResponse.data);
+
   } catch (error) {
     console.log(error);
+
+    if (error.response) {
+      alert(JSON.stringify(error.response.data, null, 2));
+    } else {
+      alert(error.message);
+    }
   }
 };
 
-  async function handlePredict(e) {
-    e.preventDefault();
 
-    if (!site) {
-    alert("Site data is still loading.");
-    return;
-  }
-
-    try {
-      const response = await api.post("/solar/predict", {
-  latitude: site.latitude,
-  longitude: site.longitude,
-});
-
-
-      setResult(response.data);
-    } catch (error) {
-      console.log(error);
-
-      if (error.response) {
-        alert(JSON.stringify(error.response.data, null, 2));
-      } else {
-        alert(error.message);
-      }
-    }
-  }
 
   return (
     <div className="flex">
@@ -81,9 +71,7 @@ const loadSite = async () => {
               Solar Prediction Parameters
             </h2>
 
-            <form onSubmit={handlePredict}>
-
-              <div className="bg-green-50 border border-green-200 rounded-xl p-4">
+            <div className="bg-green-50 border border-green-200 rounded-xl p-4">
 
   <h3 className="font-semibold text-lg mb-3">
     Selected Site
@@ -100,15 +88,6 @@ const loadSite = async () => {
   )}
 
 </div>
-
-              <div className="mt-6">
-                <PrimaryButton
-                  text="Predict Solar Potential"
-                />
-              </div>
-
-            </form>
-
           </div>
 
           {/* Result Section */}

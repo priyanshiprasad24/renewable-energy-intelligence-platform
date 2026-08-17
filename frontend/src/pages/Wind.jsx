@@ -4,7 +4,6 @@ import Sidebar from "../components/Sidebar";
 import api from "../api/api";
 
 import PageHeader from "../components/PageHeader";
-import PrimaryButton from "../components/PrimaryButton";
 import StatCard from "../components/StatCard";
 import RecommendationCard from "../components/RecommendationCard";
 
@@ -26,39 +25,30 @@ function Wind() {
   }, [siteId]);
 
   const loadSite = async () => {
-    try {
-      const response = await api.get(`/sites/${siteId}`);
-      setSite(response.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  try {
+    const response = await api.get(`/sites/${siteId}`);
 
-  async function handlePredict(e) {
-    e.preventDefault();
+    setSite(response.data);
 
-    if (!site) {
-      alert("Site data is still loading.");
-      return;
-    }
+    // Automatically predict wind potential
+    const predictionResponse = await api.post("/wind/predict", {
+      latitude: response.data.latitude,
+      longitude: response.data.longitude,
+    });
 
-    try {
-      const response = await api.post("/wind/predict", {
-        latitude: site.latitude,
-        longitude: site.longitude,
-      });
+    setResult(predictionResponse.data);
 
-      setResult(response.data);
-    } catch (error) {
-      console.error(error);
+  } catch (error) {
+    console.log(error);
 
-      if (error.response) {
-        alert(JSON.stringify(error.response.data, null, 2));
-      } else {
-        alert(error.message);
-      }
+    if (error.response) {
+      alert(JSON.stringify(error.response.data, null, 2));
+    } else {
+      alert(error.message);
     }
   }
+};
+
 
   return (
     <div className="flex">
@@ -71,6 +61,7 @@ function Wind() {
             title="🌬️ Wind Energy Prediction"
             subtitle="Predict wind energy potential using AI-powered analysis."
           />
+
 
           {/* Selected Site */}
 
@@ -90,12 +81,7 @@ function Wind() {
               <p>Loading site...</p>
             )}
 
-            <div className="mt-6">
-              <PrimaryButton
-                text="Predict Wind Potential"
-                onClick={handlePredict}
-              />
-            </div>
+          
 
           </div>
 

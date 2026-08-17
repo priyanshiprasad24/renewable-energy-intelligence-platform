@@ -35,10 +35,18 @@ function SiteDashboard() {
 
       <div className="flex-1 bg-slate-100 min-h-screen p-8">
 
-        <div className="bg-white rounded-2xl shadow p-8">
+  <button
+    onClick={() => navigate(`/projects/${site.project_id}/sites`)}
+    className="text-blue-600 hover:underline mb-6"
+  >
+    ← Back
+  </button>
+
+  <div className="bg-white rounded-2xl shadow p-8">
 
           <h1 className="text-3xl font-bold">
             {site.name}
+        
           </h1>
 
           <p className="text-gray-500 mt-2">

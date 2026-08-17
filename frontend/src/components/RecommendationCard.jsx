@@ -15,7 +15,7 @@ function RecommendationCard({ recommendation }) {
       "
     >
       <h2 className="text-2xl font-bold text-emerald-700 mb-3">
-        💡 AI Recommendation
+        💡  Recommendation
       </h2>
 
       <p className="text-slate-700 text-lg">

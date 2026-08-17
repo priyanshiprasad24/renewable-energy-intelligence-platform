@@ -55,13 +55,13 @@ const [editLongitude, setEditLongitude] = useState("");
     const latitude = parseFloat(geoData[0].lat);
     const longitude = parseFloat(geoData[0].lon);
 
-    // Save site in your backend
-    await api.post("/sites", {
-      name,
-      latitude,
-      longitude,
-      project_id: Number(projectId),
-    });
+    
+ // Save site in your backend
+await api.post("/sites", {
+  name,
+  location,
+  project_id: Number(projectId),
+});
 
     setName("");
     setLocation("");
@@ -143,7 +143,14 @@ const updateSite = async () => {
 
     <div className="flex-1 bg-slate-100 min-h-screen p-8">
 
-      <div className="flex justify-between items-center mb-8">
+  <button
+    onClick={() => navigate("/projects")}
+    className="text-blue-600 hover:underline mb-6"
+  >
+    ← Back
+  </button>
+
+  <div className="flex justify-between items-center mb-8">
         <div>
           <h1 className="text-3xl font-bold">
             Project #{projectId}
