@@ -1,7 +1,7 @@
 import os
 from logging.config import fileConfig
 
-from sqlalchemy import engine_from_config
+from sqlalchemy import engine_from_config, text
 from sqlalchemy import pool
 
 from alembic import context
@@ -41,7 +41,6 @@ def run_migrations_offline() -> None:
     with context.begin_transaction():
         context.run_migrations()
 
-
 def run_migrations_online() -> None:
     """Run migrations in online mode."""
 
@@ -59,6 +58,13 @@ def run_migrations_online() -> None:
     )
 
     with connectable.connect() as connection:
+
+        # Enable PostGIS before creating tables that use geometry.
+        connection.execute(
+            text("CREATE EXTENSION IF NOT EXISTS postgis")
+        )
+        connection.commit()
+
         context.configure(
             connection=connection,
             target_metadata=target_metadata,
@@ -68,9 +74,3 @@ def run_migrations_online() -> None:
 
         with context.begin_transaction():
             context.run_migrations()
-
-
-if context.is_offline_mode():
-    run_migrations_offline()
-else:
-    run_migrations_online()
