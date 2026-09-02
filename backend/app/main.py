@@ -42,6 +42,8 @@ origins = [
 
     "http://localhost:5178",
     "http://127.0.0.1:5178",
+    
+    "https://solar-wind-frontend.onrender.com",
 ]
 
 app.add_middleware(
