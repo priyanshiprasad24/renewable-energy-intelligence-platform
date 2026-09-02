@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 
 import Sidebar from "../components/Sidebar";
 import PageHeader from "../components/PageHeader";
-import PrimaryButton from "../components/PrimaryButton";
+
 import StatCard from "../components/StatCard";
 import RecommendationCard from "../components/RecommendationCard";
 
@@ -22,41 +22,38 @@ function Forecast() {
 
   const [site, setSite] = useState(null);
   const [result, setResult] = useState(null);
-  const [loading, setLoading] = useState(false);
+
 
   useEffect(() => {
     loadSite();
   }, []);
 
   const loadSite = async () => {
-    try {
-      const response = await api.get(`/sites/${siteId}`);
-      setSite(response.data);
-    } catch (error) {
-      console.error(error);
-      alert("Failed to load site.");
+  try {
+    const response = await api.get(`/sites/${siteId}`);
+
+    setSite(response.data);
+
+    // Automatically get weather forecast
+    const forecastResponse = await api.post("/forecast/predict", {
+      latitude: response.data.latitude,
+      longitude: response.data.longitude,
+    });
+
+    setResult(forecastResponse.data);
+
+  } catch (error) {
+    console.error(error);
+
+    if (error.response) {
+      alert(JSON.stringify(error.response.data, null, 2));
+    } else {
+      alert(error.message);
     }
-  };
+  }
+};
 
-  const handleForecast = async () => {
-    if (!site) return;
 
-    setLoading(true);
-
-    try {
-      const response = await api.post("/forecast/predict", {
-        latitude: site.latitude,
-        longitude: site.longitude,
-      });
-
-      setResult(response.data);
-    } catch (error) {
-      console.error(error);
-      alert("Failed to fetch forecast.");
-    } finally {
-      setLoading(false);
-    }
-  };
 
   return (
     <div className="flex">
@@ -95,12 +92,7 @@ function Forecast() {
 
             </div>
 
-            <div className="mt-6">
-              <PrimaryButton
-                text={loading ? "Loading..." : "Get Forecast"}
-                onClick={handleForecast}
-              />
-            </div>
+            
 
           </div>
         )}

@@ -279,14 +279,14 @@ subtitle="Manage solar and wind deployment projects across different locations."
                   Project List
                 </h2>
                 <div className="mt-6 mb-6">
-  <input
-    type="text"
-    placeholder="🔍 Search Project..."
-    value={search}
-    onChange={(e) => setSearch(e.target.value)}
-    className="w-full md:w-96 border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-500"
-  />
-</div>
+                  <input
+                  type="text"
+                  placeholder="🔍 Search Project..."
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  className="w-full md:w-96 border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-500"
+                   />
+               </div>
 
               </div>
 

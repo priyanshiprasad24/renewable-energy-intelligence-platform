@@ -1,16 +1,16 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import Login from "./pages/Login";
-import Register from "./pages/Register";
+import Register from "./pages/register";
 import Dashboard from "./pages/Dashboard";
 import Projects from "./pages/Projects";
-import Sites from "./pages/Sites";
+import Sites from "./pages/sites";
 import Environmental from "./pages/Environmental";
 import Solar from "./pages/Solar";
 import Wind from "./pages/Wind";
 import Report from "./pages/Report";
 import Profile from "./pages/Profile";
-import GISMap from "./pages/GISMap";
+import GISMap from "./pages/GISMAP";
 import SiteSuitability from "./pages/SiteSuitability";
 import DeploymentOptimization from "./pages/DeploymentOptimization";
 import Forecast from "./pages/Forecast";

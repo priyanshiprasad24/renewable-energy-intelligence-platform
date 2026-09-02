@@ -14,41 +14,37 @@ function Report() {
 
   const [site, setSite] = useState(null);
   const [report, setReport] = useState(null);
-  const [loading, setLoading] = useState(false);
+  
 
   useEffect(() => {
-    loadSite();
-  }, []);
+  loadSite();
+}, [siteId]);
+const loadSite = async () => {
+  try {
+    const response = await api.get(`/sites/${siteId}`);
 
-  const loadSite = async () => {
-    try {
-      const response = await api.get(`/sites/${siteId}`);
-      setSite(response.data);
-    } catch (error) {
-      console.error(error);
-      alert("Failed to load site.");
+    setSite(response.data);
+
+    // Automatically generate the report
+    const reportResponse = await api.post("/report/generate", {
+      latitude: response.data.latitude,
+      longitude: response.data.longitude,
+    });
+
+    setReport(reportResponse.data);
+
+  } catch (error) {
+    console.error(error);
+
+    if (error.response) {
+      alert(JSON.stringify(error.response.data, null, 2));
+    } else {
+      alert(error.message);
     }
-  };
+  }
+};
 
-  const handleGenerate = async () => {
-    if (!site) return;
 
-    setLoading(true);
-
-    try {
-      const response = await api.post("/report/generate", {
-        latitude: site.latitude,
-        longitude: site.longitude,
-      });
-
-      setReport(response.data);
-    } catch (error) {
-      console.error(error);
-      alert("Failed to generate report.");
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const downloadPDF = () => {
   if (!report || !site) {
@@ -239,7 +235,7 @@ function Report() {
 
         <PageHeader
           title="Renewable Energy Report"
-          subtitle="Generate a complete analysis report for the selected site."
+          subtitle="View the complete analysis report for the selected site."
         />
 
         <p className="text-gray-500 mb-6">
@@ -272,12 +268,7 @@ function Report() {
 
             </div>
 
-            <div className="mt-6">
-              <PrimaryButton
-                text={loading ? "Generating..." : "Generate Report"}
-                onClick={handleGenerate}
-              />
-            </div>
+           
 
           </div>
         )}

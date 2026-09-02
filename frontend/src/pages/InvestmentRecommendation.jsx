@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 
 import Sidebar from "../components/Sidebar";
 import PageHeader from "../components/PageHeader";
-import PrimaryButton from "../components/PrimaryButton";
+
 import StatCard from "../components/StatCard";
 import RecommendationCard from "../components/RecommendationCard";
 
@@ -27,35 +27,32 @@ function InvestmentRecommendation() {
     loadSite();
   }, []);
 
-  const loadSite = async () => {
-    try {
-      const response = await api.get(`/sites/${siteId}`);
-      setSite(response.data);
-    } catch (error) {
-      console.error(error);
-      alert("Failed to load site.");
+const loadSite = async () => {
+  try {
+    const response = await api.get(`/sites/${siteId}`);
+
+    setSite(response.data);
+
+    // Automatically analyze investment
+    const investmentResponse = await api.post("/investment/recommend", {
+      latitude: response.data.latitude,
+      longitude: response.data.longitude,
+    });
+
+    setResult(investmentResponse.data);
+
+  } catch (error) {
+    console.error(error);
+
+    if (error.response) {
+      alert(JSON.stringify(error.response.data, null, 2));
+    } else {
+      alert(error.message);
     }
-  };
+  }
+};
 
-  const handleInvestment = async () => {
-    if (!site) return;
-
-    setLoading(true);
-
-    try {
-      const response = await api.post("/investment/recommend", {
-        latitude: site.latitude,
-        longitude: site.longitude,
-      });
-
-      setResult(response.data);
-    } catch (error) {
-      console.error(error);
-      alert("Failed to analyze investment.");
-    } finally {
-      setLoading(false);
-    }
-  };
+ 
 
   return (
     <div className="flex">
@@ -65,7 +62,7 @@ function InvestmentRecommendation() {
 
         <PageHeader
           title="Investment Recommendation"
-          subtitle="Analyze renewable energy investment potential for the selected site."
+          subtitle="View renewable energy investment potential for the selected site."
         />
 
         {/* Site Information */}
@@ -96,12 +93,7 @@ function InvestmentRecommendation() {
 
             </div>
 
-            <div className="mt-6">
-              <PrimaryButton
-                text={loading ? "Analyzing..." : "Analyze Investment"}
-                onClick={handleInvestment}
-              />
-            </div>
+           
 
           </div>
         )}

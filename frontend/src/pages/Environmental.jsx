@@ -5,7 +5,7 @@ import Sidebar from "../components/Sidebar";
 
 import PageHeader from "../components/PageHeader";
 
-import PrimaryButton from "../components/PrimaryButton";
+
 import StatCard from "../components/StatCard";
 import RecommendationCard from "../components/RecommendationCard";
 
@@ -26,38 +26,30 @@ function Environmental() {
   
   const [result, setResult] = useState(null);
   
-  useEffect(() => {
+useEffect(() => {
   loadSite();
 }, [siteId]);
 
 const loadSite = async () => {
   try {
     const response = await api.get(`/sites/${siteId}`);
+
     setSite(response.data);
-  } catch (error) {
-    console.log(error);
-  }
-};
-  async function handleAnalyze(e) {
-  e.preventDefault();
 
-  if (!site) {
-    alert("Site data is still loading.");
-    return;
-  }
-
-  try {
-    const response = await api.post("/environment/analyze", {
-      latitude: site.latitude,
-      longitude: site.longitude,
+    // Automatically analyze the site
+    const analysisResponse = await api.post("/environment/analyze", {
+      latitude: response.data.latitude,
+      longitude: response.data.longitude,
     });
 
-    setResult(response.data);
+    setResult(analysisResponse.data);
+
   } catch (error) {
     console.log(error);
-    alert("Analysis Failed");
+    alert("Failed to load environmental data.");
   }
-}
+};
+ 
 
   return (
     <div className="flex">
@@ -77,31 +69,25 @@ const loadSite = async () => {
               Environmental Parameters
             </h2>
 
-            <form onSubmit={handleAnalyze}>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="bg-green-50 border border-green-200 rounded-xl p-4">
+       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+  <div className="bg-green-50 border border-green-200 rounded-xl p-4">
 
-  <h3 className="font-semibold text-lg">
-    Selected Site
-  </h3>
+    <h3 className="font-semibold text-lg">
+      Selected Site
+    </h3>
 
-  {site ? (
-    <>
-      <p><strong>Name:</strong> {site.name}</p>
-      <p><strong>Latitude:</strong> {site.latitude}</p>
-      <p><strong>Longitude:</strong> {site.longitude}</p>
-    </>
-  ) : (
-    <p>Loading site...</p>
-  )}
+    {site ? (
+      <>
+        <p><strong>Name:</strong> {site.name}</p>
+        <p><strong>Latitude:</strong> {site.latitude}</p>
+        <p><strong>Longitude:</strong> {site.longitude}</p>
+      </>
+    ) : (
+      <p>Loading site...</p>
+    )}
 
+  </div>
 </div>
-              </div>
-
-              <div className="mt-6">
-                <PrimaryButton text="Analyze Environment" />
-              </div>
-            </form>
           </div>
 
           {/* Results */}
